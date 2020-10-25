@@ -81,7 +81,7 @@ class MonteCarloTreeSearch:
     
     def backpropagation(self,node,reward):
         node.update_visit()
-        qvalue=reward+np.random.uniform(0,0.1) #add noise
+        qvalue=reward+np.random.uniform(0,0.05) #add noise
         node.update_total_value(qvalue)
         
         if node.is_root()==False:
