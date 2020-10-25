@@ -19,5 +19,5 @@ def run():
 
 if __name__ == "__main__":
     env = TicTacToeEnv()
-    t = MonteCarloTreeSearch(6000, player='O')
+    t = MonteCarloTreeSearch(20000, player='O')
     run()
