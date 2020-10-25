@@ -8,9 +8,10 @@ from node import Node
 
 
 class MonteCarloTreeSearch:
-    def __init__(self,iters,player='O'):
+    def __init__(self,iters,player='O',gamma=0.9):
         self.iters=iters
         self.player='O'
+        self.gamma=gamma
         
     def search(self,state,env):
         root=Node(env,state)
@@ -81,7 +82,7 @@ class MonteCarloTreeSearch:
     
     def backpropagation(self,node,reward):
         node.update_visit()
-        qvalue=reward+np.random.uniform(0,0.05) #add noise
+        qvalue=reward+np.random.uniform(0,0.03)+self.gamma*node.total_value/node.visit_times
         node.update_total_value(qvalue)
         
         if node.is_root()==False:
