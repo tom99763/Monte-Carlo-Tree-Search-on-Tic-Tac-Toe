@@ -47,8 +47,8 @@ class MonteCarloTreeSearch:
                 
                 return child
             
-            
-    def best_child(self,node,c=sqrt(0.5)):
+    #i get good result from constant=1
+    def best_child(self,node,c=sqrt(1)):
         ucb=[]
         
         if node.player==self.player:
