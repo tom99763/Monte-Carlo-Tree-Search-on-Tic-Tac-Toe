@@ -47,8 +47,7 @@ class MonteCarloTreeSearch:
                 
                 return child
             
-    #i get good result from constant=0.4
-    def best_child(self,node,c=sqrt(0.4)):
+    def best_child(self,node,c=sqrt(0.5)):
         ucb=[]
         
         if node.player==self.player:
@@ -82,7 +81,7 @@ class MonteCarloTreeSearch:
     
     def backpropagation(self,node,reward):
         node.update_visit()
-        qvalue=reward
+        qvalue=reward+np.random.uniform(0,0.1) #add noise
         node.update_total_value(qvalue)
         
         if node.is_root()==False:
