@@ -9,6 +9,7 @@ from node import Node
 
 
 
+
 class tree:
     def __init__(self,iters,env,player=None):
         self.iters=iters
@@ -26,6 +27,7 @@ class tree:
         for i in range(self.iters):
             node=self.tree_policy(self.root)
             if node.done:
+                self.backup_done(node)
                 continue
             reward=self.simulate(node)
             self.backpropagation(node,reward)
@@ -108,3 +110,11 @@ class tree:
             self.root=root
         else:
             self.backup(root.parent)
+    
+    
+    def backup_done(self,node):
+        node.update_visit()
+        if node==self.root:
+            return
+        else:
+            self.backup_done(node.parent)
