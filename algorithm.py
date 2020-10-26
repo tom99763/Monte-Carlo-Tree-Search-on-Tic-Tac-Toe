@@ -7,24 +7,31 @@ from node import Node
 
 
 
+
 class MonteCarloTreeSearch:
-    def __init__(self,iters,player='O',gamma=0.9):
+    def __init__(self,iters,env,player='O'):
         self.iters=iters
         self.player='O'
-        self.gamma=gamma
-        
-    def search(self,state,env):
-        root=Node(env,state)
+        self.env=deepcopy(env)
+        self.root=Node(self.env,env._get_obs())
+    
+    def to_child(self,state):
+        for child in self.root.children:
+            if child.state==state:
+                self.root=child
+                break
+            
+    def search(self):
         for i in range(self.iters):
-            node=self.tree_policy(root)
+            node=self.tree_policy(self.root)
             if node.done:
                 continue
             reward=self.simulate(node)
             self.backpropagation(node,reward)
             
-        return self.best_child(root,c=0).from_action
-        
-        
+        self.root=self.best_child(self.root,c=0)
+        return self.root.from_action
+           
     def tree_policy(self,node):
         #run until node is terminal
         while node.done==False:
@@ -48,6 +55,7 @@ class MonteCarloTreeSearch:
                 
                 return child
             
+            
     def best_child(self,node,c=sqrt(0.5)):
         ucb=[]
         
@@ -56,14 +64,13 @@ class MonteCarloTreeSearch:
                 if child.visit_times==0:
                     return child
                 else:
-                    # parent visit time is impossible to be 0 because it has children
                     ucb.append(child.UCB(c))
         else:
             for child in node.children:
                 if child.visit_times==0:
                     return child
                 else:
-                    # parent visit time is impossible to be 0 because it has children
+                    #the less opponent get ,the more we get
                     ucb.append(1-child.UCB(-c))
             
             
@@ -76,14 +83,24 @@ class MonteCarloTreeSearch:
         while env.done==False:
             action=choice(env.available_actions())
             s_,reward,done,info=env.step(action)
+            
         return reward
-    
     
     
     def backpropagation(self,node,reward):
         node.update_visit()
-        qvalue=reward+np.random.uniform(0,0.03)+self.gamma*node.total_value/node.visit_times
-        node.update_total_value(qvalue)
+        node.update_total_value(reward)
         
         if node.is_root()==False:
             self.backpropagation(node.parent,reward)
+            
+            
+            
+    def reset_root(self):
+        self.backup(self.root)
+        
+    def backup(self,root):
+        if root.is_root():
+            self.root=root
+        else:
+            self.backup(root.parent)
