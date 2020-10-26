@@ -10,7 +10,7 @@ from node import Node
 
 
 
-class tree:
+class MonteCarloTreeSearch:
     def __init__(self,iters,env,player=None):
         self.iters=iters
         self.player=player
