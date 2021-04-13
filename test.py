@@ -15,7 +15,7 @@ def run():
             s_, r, done, info = env.step(action)
             t.to_child(s_)
         env.render()
-    s = s_
+        s = s_
     t.reset_root()
 
 
